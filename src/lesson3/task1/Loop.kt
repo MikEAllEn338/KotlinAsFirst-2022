@@ -138,8 +138,14 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
-
+fun revert(n:Int):Int{
+    val s = n.toString()
+    var output = ""
+    for (i in s.lastIndex downTo 0){
+        output+=s[i]
+    }
+    return output.toInt()
+}
 /**
  * Средняя (3 балла)
  *
@@ -149,7 +155,15 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean {
+    val s = n.toString()
+    var flag = true
+    for (i in 0..s.lastIndex / 2) if (s[i] == s[s.lastIndex - i]) continue else {
+        flag = false
+        break
+    }
+    return flag
+}
 
 /**
  * Средняя (3 балла)
