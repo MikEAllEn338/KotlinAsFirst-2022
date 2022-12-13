@@ -207,14 +207,6 @@ fun factorizeToString(n: Int): String {
     }
     return output
 }
-// {
-//    var m = mutableListOf<Int>()
-//    for(i in 2..sqrt(n.toDouble()).toInt()){
-//        if(i == 2 && n%i == 0){
-//            m.add(i)
-//        }
-//    }
-//}
 
 /**
  * Средняя (3 балла)
