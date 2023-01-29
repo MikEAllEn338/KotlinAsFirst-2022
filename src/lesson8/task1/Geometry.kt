@@ -170,13 +170,7 @@ fun lineByPoints(a: Point, b: Point): Line = TODO()
  *
  * Построить серединный перпендикуляр по отрезку или по двум точкам
  */
-fun bisectorByPoints(a: Point, b: Point) {
-    val midpoint = Point((a.x+b.x)/2, (a.y+b.y)/2)
-    val slope = (b.y-a.y)/(b.x-a.x)
-    val axisSlope = -1/slope
-    val g = midpoint.y - axisSlope*midpoint.x
-    println("Уравнение серединного перпендикуляра: " + midpoint.y + "=" + axisSlope + "*" + midpoint.x + "+" + g)
-}
+fun bisectorByPoints(a: Point, b: Point): Line = TODO()
 
 /**
  * Средняя (3 балла)

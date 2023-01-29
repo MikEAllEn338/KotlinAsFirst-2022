@@ -3,6 +3,7 @@
 package lesson6.task1
 
 import lesson3.task1.digitNumber
+import java.util.*
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -160,7 +161,17 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    var symbol = "+"
+    var result = 0
+    val str = expression.split(" ")
+    if (!expression.matches(Regex("""\d+(?:\s*[+-]\s*\d+)*"""))) throw IllegalArgumentException()
+    for ((index, content) in str.withIndex()) {
+        if (index % 2 == 0) result += if (symbol == "+") content.toInt()
+        else -content.toInt() else symbol = content
+    }
+    return result
+}
 
 /**
  * Сложная (6 баллов)
@@ -171,7 +182,18 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    if (str.contains(Regex("""\s\s"""))) return -1
+    val words = str.split(" ")
+    var symbolIndex = 0
+    for ((index, word) in words.withIndex()) {
+        if (index < words.size - 1 && words[index + 1].lowercase(Locale.getDefault()) == word.lowercase(Locale.getDefault())){
+            return symbolIndex
+        }
+        symbolIndex += word.length + 1
+    }
+    return -1
+}
 
 /**
  * Сложная (6 баллов)
