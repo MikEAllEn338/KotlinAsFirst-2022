@@ -120,7 +120,13 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double  = sqrt(v.map { it * it}.sum())
+fun abs(v: List<Double>): Double {
+    var sum = 0.0
+    for (element in v) {
+        sum += element * element
+    }
+    return Math.sqrt(sum)
+}
 
 /**
  * Простая (2 балла)
@@ -128,8 +134,14 @@ fun abs(v: List<Double>): Double  = sqrt(v.map { it * it}.sum())
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
 fun mean(list: List<Double>): Double {
-    if (list.isEmpty()) return 0.0
-    return list.sum() / list.size
+    var sum = 0.0
+    var count = 0.0
+    if (list.isEmpty()) return sum
+    for (element in list) {
+        sum += element
+        count++
+    }
+    return sum / count
 }
 /**
  * Средняя (3 балла)
