@@ -3,10 +3,8 @@
 package lesson8.task1
 
 import lesson1.task1.sqr
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
+import java.lang.IllegalArgumentException
+import kotlin.math.*
 
 // Урок 8: простые классы
 // Максимальное количество баллов = 40 (без очень трудных задач = 11)
@@ -109,7 +107,22 @@ data class Segment(val begin: Point, val end: Point) {
  * Дано множество точек. Вернуть отрезок, соединяющий две наиболее удалённые из них.
  * Если в множестве менее двух точек, бросить IllegalArgumentException
  */
-fun diameter(vararg points: Point): Segment = TODO()
+fun diameter(vararg points: Point): Segment {
+    var maxDist = 0.0
+    if (points.size < 2)
+        throw IllegalArgumentException()
+    var maxSegment = Segment(points[0], points[1])
+    for (i in 0..points.size) {
+        for (j in 0..points.size) {
+            val dist = points[i].distance(points[j])
+            if (i != j && dist > maxDist) {
+                maxDist = dist
+                maxSegment = Segment(points[i], points[j])
+            }
+        }
+    }
+    return maxSegment
+}
 
 /**
  * Простая (2 балла)
@@ -117,7 +130,13 @@ fun diameter(vararg points: Point): Segment = TODO()
  * Построить окружность по её диаметру, заданному двумя точками
  * Центр её должен находиться посередине между точками, а радиус составлять половину расстояния между ними
  */
-fun circleByDiameter(diameter: Segment): Circle = TODO()
+fun circleByDiameter(diameter: Segment): Circle {
+    val x = min(diameter.end.x, diameter.begin.x) + abs(diameter.end.x - diameter.begin.x) / 2
+    val y = min(diameter.end.y, diameter.begin.y) + abs(diameter.end.y - diameter.begin.y) / 2
+    val radius = diameter.begin.distance(diameter.end) / 2
+    val center = Point(x, y)
+    return Circle(center, radius)
+}
 
 /**
  * Прямая, заданная точкой point и углом наклона angle (в радианах) по отношению к оси X.
@@ -156,14 +175,22 @@ class Line private constructor(val b: Double, val angle: Double) {
  *
  * Построить прямую по отрезку
  */
-fun lineBySegment(s: Segment): Line = TODO()
+fun lineBySegment(s: Segment): Line {
+    val point = Point(abs(s.end.x - s.begin.x), abs(s.end.y - s.begin.y))
+    val angle = acos(point.x / sqrt(sqr(point.x) + sqr(point.y)))
+    return Line(s.begin, angle)
+}
 
 /**
  * Средняя (3 балла)
  *
  * Построить прямую по двум точкам
  */
-fun lineByPoints(a: Point, b: Point): Line = TODO()
+fun lineByPoints(a: Point, b: Point): Line {
+    val point = Point(abs(a.x - a.x), abs(b.y - b.y))
+    val angle = acos(point.x / sqrt(sqr(point.x) + sqr(point.y)))
+    return Line(a, angle)
+}
 
 /**
  * Сложная (5 баллов)

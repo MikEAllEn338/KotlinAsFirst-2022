@@ -3,7 +3,9 @@
 package lesson9.task2
 
 import lesson9.task1.Matrix
+import lesson9.task1.MatrixImpl
 import lesson9.task1.createMatrix
+import java.lang.IllegalArgumentException
 
 // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
 
@@ -60,7 +62,43 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  * 10 11 12  5
  *  9  8  7  6
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSpiral(height: Int, width: Int): Matrix<Int> {
+    val matrix = MatrixImpl<Int>(height, width, 0)
+    var iteration = 0
+    var i = 0
+    var j = 0
+    var count = 1
+    while(matrix.get(i, j) == 0) {
+        while(j < (width - iteration)) {
+            matrix.set(i, j, count)
+            count += 1
+            j += 1
+        }
+        j -= 1
+        i += 1
+        while(i < (height - iteration)) {
+            matrix.set(i, j, count)
+            count += 1
+            i += 1
+        }
+        i -= 1
+        j -= 1
+        while(j > iteration) {
+            matrix.set(i, j, count)
+            count += 1
+            j -= 1
+        }
+        while(i > iteration) {
+            matrix.set(i, j, count)
+            count += 1
+            i -= 1
+        }
+        iteration += 1
+        i += 1
+        j += 1
+    }
+    return matrix
+}
 
 /**
  * Сложная (5 баллов)
@@ -138,7 +176,26 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
  *
  * 42 ===> 0
  */
-fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> = TODO()
+fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
+    val resultMartix = MatrixImpl<Int>(matrix.height, matrix.width, 0)
+    fun isInsideMatrix(x: Int, y: Int) = x >= 0 && x < matrix.height && y >= 0 && y < matrix.width
+    for (i in 0 until matrix.height) {
+        for (j in 0 until matrix.width) {
+            var sum = 0
+            for (x in -1..1) {
+                for (y in -1..1) {
+                    if (x == 0 && y == 0)
+                        continue
+                    else if (isInsideMatrix(i + x, j + y)) {
+                        sum += matrix.get(i + x, j + y)
+                    }
+                }
+            }
+            resultMartix.set(i, j, sum)
+        }
+    }
+    return resultMartix
+}
 
 /**
  * Средняя (4 балла)
@@ -155,7 +212,29 @@ fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> = TODO()
  * 0 0 1 0
  * 0 0 0 0
  */
-fun findHoles(matrix: Matrix<Int>): Holes = TODO()
+fun findHoles(matrix: Matrix<Int>): Holes {
+    val rows = mutableListOf<Int>()
+    val columns = mutableListOf<Int>()
+    for (i in 0 until matrix.height) {
+        var allHoles = true
+        for (j in 0 until matrix.width) {
+            if (matrix.get(i, j) == 1)
+                allHoles = false
+        }
+        if (allHoles)
+            rows.add(i)
+    }
+    for (j in 0 until matrix.width) {
+        var allHoles = true
+        for (i in 0 until matrix.height) {
+            if (matrix.get(i, j) == 1)
+                allHoles = false
+        }
+        if (allHoles)
+            columns.add(j)
+    }
+    return Holes(rows, columns)
+}
 
 /**
  * Класс для описания местонахождения "дырок" в матрице
@@ -184,7 +263,15 @@ fun sumSubMatrix(matrix: Matrix<Int>): Matrix<Int> = TODO()
  * Инвертировать заданную матрицу.
  * При инвертировании знак каждого элемента матрицы следует заменить на обратный
  */
-operator fun Matrix<Int>.unaryMinus(): Matrix<Int> = TODO(this.toString())
+operator fun Matrix<Int>.unaryMinus(): Matrix<Int> {
+    val matrix = MatrixImpl<Int>(this.height, this.width, 0)
+    for (i in 0 until this.height) {
+        for (j in 0 until this.width) {
+            matrix.set(i, j, -this.get(i, j))
+        }
+    }
+    return matrix
+}
 
 /**
  * Средняя (4 балла)
@@ -194,7 +281,21 @@ operator fun Matrix<Int>.unaryMinus(): Matrix<Int> = TODO(this.toString())
  * В противном случае бросить IllegalArgumentException.
  * Подробно про порядок умножения см. статью Википедии "Умножение матриц".
  */
-operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> = TODO(this.toString())
+operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> {
+    if (this.width != other.height)
+        throw IllegalArgumentException()
+    val resultMatrix = MatrixImpl<Int>(this.height, other.width, 0)
+    for (i in 0 until this.height) {
+        for (j in 0 until other.width) {
+            var sum = 0
+            for (k in 0 until this.width) {
+                sum += this.get(i, k) * other.get(k, j)
+            }
+            resultMatrix.set(i, j, sum)
+        }
+    }
+    return resultMatrix
+}
 
 /**
  * Сложная (7 баллов)

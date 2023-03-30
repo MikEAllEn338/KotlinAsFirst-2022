@@ -2,6 +2,8 @@
 
 package lesson9.task1
 
+import java.lang.IllegalArgumentException
+
 // Урок 9: проектирование классов
 // Максимальное количество баллов = 40 (без очень трудных задач = 15)
 
@@ -44,32 +46,60 @@ interface Matrix<E> {
  * height = высота, width = ширина, e = чем заполнить элементы.
  * Бросить исключение IllegalArgumentException, если height или width <= 0.
  */
-fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> = TODO()
+fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> {
+    if (height <= 0 || width <= 0)
+        throw IllegalArgumentException()
+    return MatrixImpl<E>(height, width, e)
+}
 
 /**
  * Средняя сложность (считается двумя задачами в 3 балла каждая)
  *
  * Реализация интерфейса "матрица"
  */
-class MatrixImpl<E> : Matrix<E> {
-    override val height: Int = TODO()
+class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : Matrix<E> {
+    private val matrix = mutableMapOf<Cell, E>()
 
-    override val width: Int = TODO()
+    init {
+        for (i in 0 until height) {
+            for (j in 0 until width) {
+                matrix.put(Cell(i, j), e)
+            }
+        }
+    }
 
-    override fun get(row: Int, column: Int): E = TODO()
+    override fun get(row: Int, column: Int): E {
+        return matrix.get(Cell(row, column))!!
+    }
 
-    override fun get(cell: Cell): E = TODO()
+    override fun get(cell: Cell): E {
+        return matrix.get(cell)!!
+    }
 
     override fun set(row: Int, column: Int, value: E) {
-        TODO()
+        matrix.put(Cell(row, column), value)
     }
 
     override fun set(cell: Cell, value: E) {
-        TODO()
+        matrix.put(cell, value)
     }
 
-    override fun equals(other: Any?) = TODO()
+    override fun equals(other: Any?): Boolean {
+        return other is MatrixImpl<*> &&
+                height == other.height &&
+                width == other.width && matrix.equals(other.matrix)
+    }
 
-    override fun toString(): String = TODO()
+    override fun toString(): String {
+        val result = StringBuilder()
+        for (i in 0 until height) {
+            for (j in 0 until width) {
+                result.append(matrix.get(Cell(i, j)).toString())
+                result.append(" ")
+            }
+            result.append("\n")
+        }
+        return result.toString()
+    }
 }
 

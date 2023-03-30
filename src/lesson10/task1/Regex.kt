@@ -152,7 +152,18 @@ class Parser(private val groups: List<String>) {
      * предыдущих функциях парсера, и поддержать операцию POW внутри функции calculate.
      */
     internal fun parseExponentiation(): Expression {
-        TODO()
+        var left = parseFactor()
+        while (pos < groups.size) {
+            when (val op = operationMap[groups[pos]]) {
+                POW -> {
+                    pos++
+                    val right = parseFactor()
+                    left = Expression.Binary(left, op, right)
+                }
+                else -> return left
+            }
+        }
+        return left
     }
 
     private val operationMap = mapOf("+" to PLUS, "-" to MINUS, "*" to TIMES, "/" to DIV, "^" to POW)

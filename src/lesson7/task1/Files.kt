@@ -63,7 +63,16 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    for (line in File(inputName).readLines()) {
+        if (line.isNotEmpty() && line[0] == '_') {
+            continue
+        } else {
+            writer.write(line)
+            writer.newLine()
+        }
+    }
+    writer.close()
 }
 
 /**
@@ -76,27 +85,22 @@ fun deleteMarked(inputName: String, outputName: String) {
  *
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
-    val mapStr = mutableMapOf<String, Int>()
-    val str: String = File(inputName).bufferedReader().readLines().toString()
-    for (word in substrings) {
-        mapStr[word] = 0
-        var tempContent = str
-        if (tempContent.contains(word, true)) {
-            var tempIndex = 0
-            while (tempContent.contains(word, true)) {
-                tempIndex = tempContent.findAnyOf(listOf(word), tempIndex, true)?.first ?: tempContent.length
-                tempIndex++
-                mapStr[word] = (mapStr[word] ?: 0) + 1
-                if (tempIndex < tempContent.length) {
-                    tempContent = tempContent.substring(tempIndex, tempContent.length)
-                    tempIndex = 0
-                } else break
+    val substringsSet = substrings.toSet()
+    val result = mutableMapOf<String, Int>()
+
+    for (line in File(inputName).readLines()) {
+        if (line.isNotEmpty()) {
+            line.split(Regex("\\s+")).forEach {
+                val loweredString = it.lowercase()
+                if (substringsSet.contains(loweredString)) {
+                    result[loweredString] = result.getOrDefault(loweredString, 0) + 1
+                }
             }
         }
     }
-    return mapStr
-}
 
+    return result
+}
 /**
  * Средняя (12 баллов)
  *
@@ -111,8 +115,44 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val exceptions = setOf("жюри", "брошюра", "парашют")
+    val charsBefore = setOf('Ж', 'Ч', 'Ш', 'Щ', 'ж', 'ч', 'ш', 'щ')
+    val charsAfter = setOf('Ы', 'Я', 'Ю', 'ы', 'я', 'ю')
+    val mapping = mapOf('ы' to 'и', 'я' to 'а', 'ю' to 'у')
+
+    for (line in File(inputName).readLines()) {
+        if (line.isNotEmpty()) {
+            val wordMapping = mutableMapOf<String, String>()
+            var newLine = line
+            for (word in line.split(Regex("\\s+"))) {
+                if (!exceptions.contains(word)) {
+                    val newWord = StringBuilder()
+                    var i = 0
+                    while (i < word.length - 1) {
+                        newWord.append(word[i])
+                        if (charsBefore.contains(word[i]) and charsAfter.contains(word[i + 1])) {
+                            val isUpper = word[i + 1].isUpperCase()
+                            val newChar = mapping[word[i + 1].lowercaseChar()]
+                            if (isUpper)
+                                newWord.append(newChar?.uppercaseChar())
+                            else
+                                newWord.append(newChar)
+                            i++
+                        } else if (i == word.length - 2)
+                            newWord.append(word[i + 1])
+                        i++
+                    }
+                    newLine = newLine.replace(word, newWord.toString())
+                }
+            }
+            writer.write(newLine)
+        }
+        writer.newLine()
+    }
+    writer.close()
 }
+
 
 /**
  * Средняя (15 баллов)
@@ -224,7 +264,31 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val newDictionary = mutableMapOf<Char, String>()
+
+    dictionary.forEach {
+        val lowerCaseKey = it.key.lowercase()[0]
+        val upperCaseKey= it.key.uppercase()[0]
+        newDictionary.put(lowerCaseKey, it.value)
+        newDictionary.put(upperCaseKey, it.value)
+    }
+
+    for (line in File(inputName).readLines()) {
+        if (line.isNotEmpty()) {
+            line.forEach {
+                val isUpper = it.isUpperCase()
+                var outputString = newDictionary.getOrDefault(it, it.toString())
+                outputString = outputString.lowercase()
+                if (isUpper) {
+                    outputString = StringBuilder(outputString)
+                        .also { it.setCharAt(0, outputString[0].uppercaseChar()) }.toString()
+                }
+                writer.write(outputString)
+            }
+        }
+    }
+    writer.close()
 }
 
 /**
